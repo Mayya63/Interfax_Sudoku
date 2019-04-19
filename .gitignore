@@ -1,2 +1,9 @@
-﻿# Visual Studio 2015/2017 каталог кэша / параметров
+﻿# Пользовательские файлы
+* .rsuser
+* .suo
+* .user
+* .userosscache
+* .sln.docstates
+
+# Visual Studio 2015/2017 каталог кэша / параметров
 .vs/
