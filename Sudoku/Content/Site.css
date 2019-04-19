@@ -55,7 +55,7 @@ tr:nth-child(6) .range2 input
     flex-direction: row;
 }
 
-#but1, #but2, #but3 {
+#reload, #opencell, #check {
     display: table;
     margin: 0 0 20px 20px;
     width: 200px;
