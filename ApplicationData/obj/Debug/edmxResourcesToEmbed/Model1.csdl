@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="localDbModel" Alias="Self" annotation:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
+  <EntityType Name="tsudocu">
+    <Key>
+      <PropertyRef Name="id" />
+    </Key>
+    <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+    <Property Name="level" Type="Int32" />
+    <Property Name="num1" Type="Int32" />
+    <Property Name="num2" Type="Int32" />
+    <Property Name="num3" Type="Int32" />
+    <Property Name="num4" Type="Int32" />
+    <Property Name="num5" Type="Int32" />
+    <Property Name="num6" Type="Int32" />
+    <Property Name="num7" Type="Int32" />
+    <Property Name="num8" Type="Int32" />
+    <Property Name="num9" Type="Int32" />
+  </EntityType>
+  <EntityContainer Name="localDbEntities" annotation:LazyLoadingEnabled="true">
+    <EntitySet Name="tsudocu" EntityType="Self.tsudocu" />
+  </EntityContainer>
+</Schema>

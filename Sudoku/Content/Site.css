@@ -1,0 +1,93 @@
+﻿body {
+    padding-top: 50px;
+    padding-bottom: 20px;
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+.row input {
+    width: 50px;
+    height: 50px;
+    text-align: center;
+    border:none;
+}
+table {
+    border-spacing: 0 10px;
+    font-family: 'Open Sans', sans-serif;
+    font-weight: bold;
+}
+
+td {
+    vertical-align: middle;
+    width: 50px;
+    font-size: 20px;
+    text-align: center;
+    border: 2px solid #56433D;
+}
+
+tr:nth-child(-n+3) .range1 input,
+tr:nth-child(7) .range1 input,
+tr:nth-child(8) .range1 input,
+tr:nth-child(9) .range1 input,
+tr:nth-child(4) .range2 input,
+tr:nth-child(5) .range2 input,
+tr:nth-child(6) .range2 input 
+{
+    background: #aaf7dd;
+}
+
+.tables {
+    float: left;
+    text-align: center;
+    display: flex;
+    flex-direction: row;
+}
+
+#but1, #but2, #but3 {
+    display: table;
+    margin: 0 0 20px 20px;
+    width: 200px;
+    height: 30px;
+}
+.level {
+    display: flex;
+    flex-direction: row;
+}
+#lab1 {
+    display: table;
+    margin: 10px 0px 20px 20px;
+}
+#level {
+    display: table;
+    margin: 0 0 20px 15px;
+    width: 43px;
+    height: 30px;
+}
+footer {
+    flex: 0 0 auto;
+}
+input::-webkit-input-placeholder {
+ color: red;
+}
+#error {
+    color: red;
+    margin: 10px 0px 20px 20px;
+}
+#result {
+    color: forestgreen;
+    font-size: 24px;
+    margin: 10px 0px 20px 20px;
+}
+   

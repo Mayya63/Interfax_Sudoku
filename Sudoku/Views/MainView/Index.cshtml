@@ -1,0 +1,235 @@
+﻿
+@using SudocuData.Entities;
+@model List<NumberResponse>
+@{
+    ViewBag.Title = "Main";
+}
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <title>Product App</title>
+    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
+    
+    <script>
+        var selectVal = '';
+        var selectId = 0;
+        $('.row').ready(function () {
+            
+            //изменение цвета введенных значений
+            $('input').change(function () {
+                this.style.color = 'blue';
+            });
+            //блокировка от изменения значений по умолчанию
+            $('input').hover(function () {
+                if (this.value != null && this.value != "" && this.style.color != "blue" && this.style.color != "red") {
+                    $(this).attr('readonly', 'readonly');
+                }
+                else {
+                    $(this).removeAttr('readonly', 'readonly');
+                }
+            });
+            $('input').focus(function () { 
+                if (this.value == null || this.value == "") {
+                    this.style.backgroundColor = '#cec8c8';
+                    selectVal = this.getAttribute('id');
+                    selectId = this.parentElement.parentElement.children[0].children[0].value;
+
+                }
+            });
+            
+            $('input').blur(function () {
+                this.style.backgroundColor = '';                
+                if (this.value && isNaN(this.value) ) { 
+                  // показать ошибку
+                    this.style.color = 'red';
+                    error.innerHTML = 'Недопустимое значение. Введите цифру.';
+                }
+                var regexp = /^[1-9]{1}$/;
+                if (this.value && !regexp.exec(this.value)) {
+                    this.style.color = 'red';
+                    error.innerHTML = 'Недопустимое значение. Введите цифру от 1 до 9';
+                }
+                
+                else {
+                    this.style.borderColor = '';
+                    error.innerHTML = '';
+                }
+                var selectVal = '';
+                var selectId = 0;
+            });
+        })
+
+    </script>
+ 
+</head>
+<body>
+
+    <div>
+        <h2>СУДОКУ</h2>
+        <ul id="maintable" />
+    </div>
+    <div>
+        <!--<input type="button" value="Search" onclick="find();" />-->
+        <p />
+    </div>
+
+    <div class="tables">
+        <table id="tserv">
+            @foreach (var item in Model)
+            {
+            <tr class="row">
+                <td hidden class="range1">
+                    <input id="id" value=@item.Id>
+                </td>
+                <td class="range1">
+                    <input id="num1" name="tt" required pattern="[1-9]" value=@item.Num1>
+                </td>
+                <td class="range1">
+                    <input id="num2" value=@item.Num2>
+                </td>
+                <td class="range1">
+                    <input id="num3" value=@item.Num3>
+                </td>
+                <td class="range2">
+                    <input id="num4" value=@item.Num4>
+                </td>
+                <td class="range2">
+                    <input id="num5" value=@item.Num5>
+                </td>
+                <td class="range2">
+                    <input id="num6" value=@item.Num6>
+                </td>
+                <td class="range1">
+                    <input id="num7" value=@item.Num7>
+                </td>
+                <td class="range1">
+                    <input id="num8" value=@item.Num8>
+                </td>
+                <td class="range1">
+                    <input id="num9" value=@item.Num9>
+                </td>
+
+            </tr>
+            }
+        </table>
+        <div class="buttons">
+            <div class="level">
+                <label id="lab1">Уровень сложности:</label>
+                <select id="level">
+                    <option selected>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                    <option>5</option>
+                </select>
+            </div>
+            <button id="reload" data-id={GameId} data-action="load">Новая игра</button>
+            <button id="opencell" data-id={GameId} data-action="open">Открыть ячейку</button>
+            <button id="check" data-id={GameId} data-action="verify">Проверить</button>
+            <div id="error"></div>
+            <div id="result"></div>
+        </div>
+    </div>
+
+    <script type="text/javascript">
+        function getData() {
+            $.getJSON("/api/Main", null);
+        };
+        $(function () {
+            $('#reload').click(function (e) {
+                var level = $("#level option:selected").text()
+                $.ajax({
+                    type: 'POST',
+                    url: '/api/Main/Load',
+                    contentType: 'text/html; charset=utf-8',
+                    data: level,
+                    success: function (data) {
+                        location.href= `/MainView/Index/${level}`                       
+                    },
+                    fail: function (data) {
+                        alert("Unknown error");
+                    }
+                });
+                console.log(level);
+            });
+        });
+        $(function () {
+            $('#opencell').click(function (e) {
+                console.log(selectVal);
+                var level = $("#level option:selected").text();
+                var cell = {
+                    Id: selectId,
+                    ColName: selectVal
+                }
+                $.ajax({
+                    type: 'PUT',
+                    url: '/api/Main/OpenCell',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify(cell),
+                    success: function (n) {
+                        var input = $('input[id=' + selectVal + ']')
+                        input[selectId - 1].value = n;                        
+                    },
+                    fail: function (data) {
+                        alert("Unknown error");
+                    }
+                });
+                console.log(level);
+            });
+        });
+        $(function () {
+            $('#check').click(function (e) {
+                e.preventDefault();
+                var table = $('#tserv');
+                var rows = table.children().children();
+                                
+                var listdata = [];
+                for (var i = 0; i < rows.length; i++) {
+                     var tr = $(rows[i]).children().children();
+                
+                var response = {
+                    Id: tr[0].value,
+                    Level: $("#level option:selected").text(),
+                    Num1: tr[1].value,
+                    Num2: tr[2].value,
+                    Num3: tr[3].value,
+                    Num4: tr[4].value,
+                    Num5: tr[5].value,
+                    Num6: tr[6].value,
+                    Num7: tr[7].value,
+                    Num8: tr[8].value,
+                    Num9: tr[9].value
+                    }
+                   
+                    listdata.push(response);
+                }
+
+                console.log(listdata);
+
+               $.ajax({
+                    type: 'PUT',
+                    url: '/api/Main/Verify',
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify(listdata),
+                    success: function (data) {
+                        if (data) {
+                            result.style.color = 'forestgreen';
+                            result.innerHTML = 'Поздравляю Вас! Вы правильно решили Судоку.';
+                        }
+                        else {
+                            result.style.color = 'red';
+                            result.innerHTML = 'В решении есть ошибки.';
+                        }
+                    },
+                    fail: function (data) {
+                        alert("Unknown error");
+                    }
+                });
+            });
+        })
+    </script>
+   
+</body>
+</html>
+
+

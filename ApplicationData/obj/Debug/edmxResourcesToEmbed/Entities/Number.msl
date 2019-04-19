@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Mapping Space="C-S" xmlns="http://schemas.microsoft.com/ado/2009/11/mapping/cs">
+  <EntityContainerMapping StorageEntityContainer="Хранилище localDbModelContainer" CdmEntityContainer="localDbEntities2">
+    <EntitySetMapping Name="tsudocu">
+      <EntityTypeMapping TypeName="localDbModel.tsudocu">
+        <MappingFragment StoreEntitySet="tsudocu">
+          <ScalarProperty Name="id" ColumnName="id" />
+          <ScalarProperty Name="level" ColumnName="level" />
+          <ScalarProperty Name="num1" ColumnName="num1" />
+          <ScalarProperty Name="num2" ColumnName="num2" />
+          <ScalarProperty Name="num3" ColumnName="num3" />
+          <ScalarProperty Name="num4" ColumnName="num4" />
+          <ScalarProperty Name="num5" ColumnName="num5" />
+          <ScalarProperty Name="num6" ColumnName="num6" />
+          <ScalarProperty Name="num7" ColumnName="num7" />
+          <ScalarProperty Name="num8" ColumnName="num8" />
+          <ScalarProperty Name="num9" ColumnName="num9" />
+        </MappingFragment>
+      </EntityTypeMapping>
+    </EntitySetMapping>
+  </EntityContainerMapping>
+</Mapping>
