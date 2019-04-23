@@ -69,6 +69,11 @@ tr:nth-child(6) .range2 input
     display: table;
     margin: 10px 0px 20px 20px;
 }
+#lab1 span {
+    font-size: 20px;
+    color: #d8890b;
+    font-weight:800;
+}
 #level {
     display: table;
     margin: 0 0 20px 15px;

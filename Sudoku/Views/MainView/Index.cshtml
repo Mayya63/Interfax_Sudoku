@@ -8,13 +8,19 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
     <title>Product App</title>
-    <script src="https://ajax.aspnetcdn.com/ajax/jQuery/jquery-2.0.3.min.js"></script>
-    
+   
+    <script type="text/javascript" src="~/Scripts/jquery-3.4.0.js"></script>
+    <script type="text/javascript" src="~/Scripts/jcook.js"></script>
     <script>
+       
+
         var selectVal = '';
         var selectId = 0;
+        var arr = [];
         $('.row').ready(function () {
-            
+
+            var lev = Number($("#level").text());
+            addArrayToCookie(lev); //записываем уровень в куки
             //изменение цвета введенных значений
             $('input').change(function () {
                 this.style.color = 'blue';
@@ -28,7 +34,7 @@
                     $(this).removeAttr('readonly', 'readonly');
                 }
             });
-            $('input').focus(function () { 
+            $('input').focus(function () {
                 if (this.value == null || this.value == "") {
                     this.style.backgroundColor = '#cec8c8';
                     selectVal = this.getAttribute('id');
@@ -36,11 +42,11 @@
 
                 }
             });
-            
+
             $('input').blur(function () {
-                this.style.backgroundColor = '';                
-                if (this.value && isNaN(this.value) ) { 
-                  // показать ошибку
+                this.style.backgroundColor = '';
+                if (this.value && isNaN(this.value)) {
+                    // показать ошибку
                     this.style.color = 'red';
                     error.innerHTML = 'Недопустимое значение. Введите цифру.';
                 }
@@ -49,18 +55,18 @@
                     this.style.color = 'red';
                     error.innerHTML = 'Недопустимое значение. Введите цифру от 1 до 9';
                 }
-                
+
                 else {
                     this.style.borderColor = '';
                     error.innerHTML = '';
                 }
-                var selectVal = '';
-                var selectId = 0;
+                selectVal = '';
+                selectId = 0;
             });
         })
 
     </script>
- 
+
 </head>
 <body>
 
@@ -114,14 +120,8 @@
         </table>
         <div class="buttons">
             <div class="level">
-                <label id="lab1">Уровень сложности:</label>
-                <select id="level">
-                    <option selected>1</option>
-                    <option>2</option>
-                    <option>3</option>
-                    <option>4</option>
-                    <option>5</option>
-                </select>
+                <label id="lab1">Уровень сложности:  <span id="level">@Model.Select(x => x.Level).First()</span></label>
+                
             </div>
             <button id="reload" data-id={GameId} data-action="load">Новая игра</button>
             <button id="opencell" data-id={GameId} data-action="open">Открыть ячейку</button>
@@ -132,31 +132,45 @@
     </div>
 
     <script type="text/javascript">
-        function getData() {
-            $.getJSON("/api/Main", null);
+        
+        function getLevel() {
+            var arr = readArrayFromCookie();
+
+            for (var i = 1; i < 3; i++) {
+                // var rand = Math.floor(Math.random() * 5);
+                //если в куки нет этого числа, возвращаем его
+                if (!arr.includes(i)) {
+                    return i;
+                }
+            }
+            alert("Все этапы игры пройдены.")
+            return 1;
         };
+
+
         $(function () {
             $('#reload').click(function (e) {
-                var level = $("#level option:selected").text()
+                var newLevel = getLevel();
+                console.log(newLevel);
                 $.ajax({
                     type: 'POST',
-                    url: '/api/Main/Load',
-                    contentType: 'text/html; charset=utf-8',
-                    data: level,
+                    url: `/api/Main/Post?level=${newLevel}`,
+                    contentType: 'application/json; charset=utf-8',
+                    data: ({ level: newLevel }),
                     success: function (data) {
-                        location.href= `/MainView/Index/${level}`                       
+                        location.href= `/MainView/Index/${newLevel}`                       
                     },
                     fail: function (data) {
                         alert("Unknown error");
                     }
                 });
-                console.log(level);
+                
             });
         });
         $(function () {
             $('#opencell').click(function (e) {
                 console.log(selectVal);
-                var level = $("#level option:selected").text();
+                var level = $("#level").text();
                 var cell = {
                     Id: selectId,
                     ColName: selectVal
@@ -168,7 +182,7 @@
                     data: JSON.stringify(cell),
                     success: function (n) {
                         var input = $('input[id=' + selectVal + ']')
-                        input[selectId - 1].value = n;                        
+                        input[selectId - (level == 1 ? 1 : (level-1)*9 + 1)].value = n;                        
                     },
                     fail: function (data) {
                         alert("Unknown error");
@@ -189,7 +203,7 @@
                 
                 var response = {
                     Id: tr[0].value,
-                    Level: $("#level option:selected").text(),
+                    Level: $("#level").text(),
                     Num1: tr[1].value,
                     Num2: tr[2].value,
                     Num3: tr[3].value,

@@ -24,7 +24,7 @@ namespace Sudoku.Controllers
         private NumberContext db = new NumberContext();
                 
         [HttpPost]
-        public IHttpActionResult Load([FromBody] int level)
+        public IHttpActionResult Post( int level)
         {
             if (!ModelState.IsValid)
             {
@@ -55,32 +55,6 @@ namespace Sudoku.Controllers
 
             return Ok(eq);
         }
-
-
-        /*
-        /// <summary>
-        /// Получить таблицу исходя уз уровня сложности
-        /// </summary>
-        /// <param name="id">ИД публикации</param>
-        /// <returns>Количество просмотров</returns>
-        public static DataTable GetTable(int level)
-        {
-            var query = Sudoku.GetQueryForTable(1);
-            using (var connection = new SqlConnection(ConfigurationManager.ConnectionStrings["Database"].ConnectionString))
-            {
-
-                using (var command = new SqlCommand(query, connection))
-                {
-                    command.Parameters.Add(new SqlParameter("level", 1));
-                    return Sudoku.ReadToTable(command);
-                    // return (int)table.Rows[0]["count"];
-                }
-            }
-        }
-        */
-
-
-
 
     }
 }
