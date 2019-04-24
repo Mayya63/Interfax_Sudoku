@@ -12,19 +12,21 @@
     <script type="text/javascript" src="~/Scripts/jquery-3.4.0.js"></script>
     <script type="text/javascript" src="~/Scripts/jcook.js"></script>
     <script>
-       
-
         var selectVal = '';
         var selectId = 0;
         var arr = [];
+
         $('.row').ready(function () {
 
             var lev = Number($("#level").text());
             addArrayToCookie(lev); //записываем уровень в куки
+
             //изменение цвета введенных значений
             $('input').change(function () {
-                this.style.color = 'blue';
+                  this.style.color = 'blue';
+                
             });
+
             //блокировка от изменения значений по умолчанию
             $('input').hover(function () {
                 if (this.value != null && this.value != "" && this.style.color != "blue" && this.style.color != "red") {
@@ -34,6 +36,7 @@
                     $(this).removeAttr('readonly', 'readonly');
                 }
             });
+            //стилевые параметры ячейки в фокусе
             $('input').focus(function () {
                 if (this.value == null || this.value == "") {
                     this.style.backgroundColor = '#cec8c8';
@@ -44,7 +47,9 @@
             });
 
             $('input').blur(function () {
-                this.style.backgroundColor = '';
+                if (!$('#opencell').is(":hover")) {
+                    this.style.backgroundColor = '';
+                }
                 if (this.value && isNaN(this.value)) {
                     // показать ошибку
                     this.style.color = 'red';
@@ -60,8 +65,7 @@
                     this.style.borderColor = '';
                     error.innerHTML = '';
                 }
-                selectVal = '';
-                selectId = 0;
+               
             });
         })
 
@@ -136,37 +140,30 @@
         function getLevel() {
             var arr = readArrayFromCookie();
 
-            for (var i = 1; i < 3; i++) {
-                // var rand = Math.floor(Math.random() * 5);
+            for (var i = 1; i < 6; i++) {
+                // var rand = Math.floor(Math.random() * 5); - если хотим рандомно
+
                 //если в куки нет этого числа, возвращаем его
                 if (!arr.includes(i)) {
                     return i;
                 }
             }
-            alert("Все этапы игры пройдены.")
+            deleteCookie();
+            alert("Все этапы игры пройдены. Начните заново.");
             return 1;
         };
 
-
+        //перезапуск
         $(function () {
             $('#reload').click(function (e) {
                 var newLevel = getLevel();
                 console.log(newLevel);
-                $.ajax({
-                    type: 'POST',
-                    url: `/api/Main/Post?level=${newLevel}`,
-                    contentType: 'application/json; charset=utf-8',
-                    data: ({ level: newLevel }),
-                    success: function (data) {
-                        location.href= `/MainView/Index/${newLevel}`                       
-                    },
-                    fail: function (data) {
-                        alert("Unknown error");
-                    }
-                });
+                location.href = `/MainView/Index/${newLevel}`  
                 
             });
         });
+
+        //открыть ячейку
         $(function () {
             $('#opencell').click(function (e) {
                 console.log(selectVal);
@@ -182,7 +179,11 @@
                     data: JSON.stringify(cell),
                     success: function (n) {
                         var input = $('input[id=' + selectVal + ']')
-                        input[selectId - (level == 1 ? 1 : (level-1)*9 + 1)].value = n;                        
+                        var input2 = $('input:focus');
+                        var num = selectId - (level == 1 ? 1 : (level - 1) * 9 + 1);
+                        input[num].value = n; 
+                        input[num].style.backgroundColor = '';
+                        input[num].style.color = 'inherit';
                     },
                     fail: function (data) {
                         alert("Unknown error");
@@ -191,6 +192,8 @@
                 console.log(level);
             });
         });
+
+        //проверить
         $(function () {
             $('#check').click(function (e) {
                 e.preventDefault();

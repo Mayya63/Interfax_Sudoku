@@ -24,11 +24,13 @@ namespace SudocuServices.Services
             _listNumbers = GetNumbers();
             _listNumbersResult = GetNumbersResult();
         }
+
         public List<NumberResponse> GetNumbers()
         {
             return db.Numbers.ToList();
             
         }
+
         public List<NumberResultResponse> GetNumbersResult()
         {
             return dbResult.NumbersResult.ToList();
@@ -55,23 +57,37 @@ namespace SudocuServices.Services
             Func<NumberResponse, bool> filterFunc = x => x.Level == level;
             return _listNumbers.Where(filterFunc).ToList();
         }
+
+        /// <summary>
+        /// Загрузить таблицу результатов исходя уз уровня сложности
+        /// </summary>
+        /// <param name="level">уровень</param>
+        /// <returns></returns>
+        public List<NumberResultResponse> LoadResult(int level)
+        {
+            Func<NumberResultResponse, bool> filterFunc = x => x.Level == level;
+            return _listNumbersResult.Where(filterFunc).ToList();
+        }
+
         /// <summary>
         /// Проверить правильность заполнения таблицы
         /// <param name="data">Коллекция чисел</param>
         /// <returns></returns>
         public bool Verify(List<NumberResponse> data)
         {
-            List<NumberResultResponse> result = GetNumbersResult();
+            int level = data.FirstOrDefault().Level;
+            List<NumberResultResponse> result = LoadResult(level);
 
             return  SequenceEquals(data, result);
 
         }
+
         public bool SequenceEquals(List<NumberResponse> A, List<NumberResultResponse> B)
         {
             if (A.Count() != B.Count())
                 return false;
             for (int i = 0; i < A.Count(); i++)
-             {
+            {
                     if (A[i].Id != B[i].Id || 
                         A[i].Level != B[i].Level ||
                         A[i].Num1 != B[i].Num1 ||

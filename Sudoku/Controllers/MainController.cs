@@ -14,6 +14,7 @@ using System.Threading.Tasks;
 using Newtonsoft.Json;
 using System.Web.Http.Results;
 using Sudoku.Models;
+using System.Web;
 
 namespace Sudoku.Controllers
 {
@@ -21,20 +22,23 @@ namespace Sudoku.Controllers
     public class MainController : ApiController
     {
         private INumberService _numService = new NumberService();
-        private NumberContext db = new NumberContext();
+        private NumberContext db = new NumberContext();        
                 
-        [HttpPost]
-        public IHttpActionResult Post( int level)
-        {
-            if (!ModelState.IsValid)
-            {
-                return BadRequest(ModelState);
-            }            
-            var response = _numService.Load(level);
-            db.SaveChanges();
+        //[HttpPost]
+        //public IHttpActionResult Post( int level)
+        //{
+        //    if (!ModelState.IsValid)
+        //    {
+        //        return BadRequest(ModelState);
+        //    }
+        //    var request = HttpContext.Current.Items["MS_HttpRequestMessage"] as HttpRequestMessage;
+        //    var httpContext = (HttpContextWrapper)request.Properties["MS_HttpContext"];
 
-            return Ok();
-        }
+        //    var response = _numService.Load(level);
+        //    db.SaveChanges();
+
+        //    return Ok();
+        //}
 
         [HttpPut]
         [Route("OpenCell")]
@@ -52,7 +56,6 @@ namespace Sudoku.Controllers
         public IHttpActionResult Verify([FromBody] List<NumberResponse> data)
         {
             bool eq = _numService.Verify(data);
-
             return Ok(eq);
         }
 
